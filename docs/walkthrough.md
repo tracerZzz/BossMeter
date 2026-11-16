@@ -31,6 +31,19 @@
 
 ---
 
+## 当前进度总览
+
+| 阶段 / 事项 | 状态 | 说明 |
+| :--- | :---: | :--- |
+| 仓库初始化与 GitHub 托管 | ✅ 已完成 | 仓库 `tracerZzz/dst-tracer`，主分支 `master` |
+| 核心引擎与 4 大类采集器 MVP | ✅ 已完成 | 注册表、会话状态机、序列化、7 项内置指标 |
+| 网络同步与内置图表 UI | ✅ 已完成 | `ModRPC` 分片推送、柱状图/折线图、回顾面板 |
+| 纯 Lua 单元测试 | ✅ 已通过 | `luajit tests/run_tests.lua`（46 passed, 0 failed） |
+| 本地联机 MVP 实机验证 | ✅ 已跑通 | 已软链接至 DST `mods/Tracer` 并在本地房间运行 |
+| 洞穴双分片与细节打磨 | ⏳ 待推进 | Master + Caves 测试、UI/归因细节优化、外部 API 联调 |
+
+---
+
 ## 验证状态
 
 * **纯 Lua 单元测试**：已通过 `luajit tests/run_tests.lua` 执行全部测试，结果 **46 passed, 0 failed**。
