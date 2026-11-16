@@ -23,14 +23,14 @@ function DamageCollector.AttachBoss(boss, collector)
 
         local player = Attribution.ResolvePlayer(data.attacker)
         if player then
-            ensure_boss_session(inst, collector, GLOBAL.GetTime())
+            ensure_boss_session(inst, collector, GetTime())
         end
     end)
 
     -- Start session if the Boss hits a player first
     boss:ListenForEvent("onhitother", function(inst, data)
         if data and data.target and data.target:HasTag("player") then
-            ensure_boss_session(inst, collector, GLOBAL.GetTime())
+            ensure_boss_session(inst, collector, GetTime())
         end
     end)
 
@@ -50,7 +50,7 @@ function DamageCollector.AttachBoss(boss, collector)
             return
         end
 
-        local now = GLOBAL.GetTime()
+        local now = GetTime()
         ensure_boss_session(inst, collector, now)
 
         local pid, pname, pprefab = Attribution.GetPlayerInfo(player)

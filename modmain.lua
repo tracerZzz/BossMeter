@@ -54,19 +54,19 @@ if not (GLOBAL.TheNet and GLOBAL.TheNet:IsDedicated()) then
     local HudIndicator = require("tracer/ui/hud_indicator")
     local ReviewPanel = require("tracer/ui/review_panel")
 
-    AddClassPostConstruct("screens/playerhud", function(hud)
-        if not hud or not hud.controls then
+    AddClassPostConstruct("widgets/controls", function(controls)
+        if not controls then
             return
         end
 
-        local indicator = hud.controls:AddChild(HudIndicator())
-        indicator:SetHAnchor(ANCHOR_MIDDLE)
-        indicator:SetVAnchor(ANCHOR_TOP)
+        local indicator = controls:AddChild(HudIndicator())
+        indicator:SetHAnchor(GLOBAL.ANCHOR_MIDDLE)
+        indicator:SetVAnchor(GLOBAL.ANCHOR_TOP)
         indicator:SetPosition(0, -36, 0)
 
-        local review_panel = hud.controls:AddChild(ReviewPanel(client_store))
-        review_panel:SetHAnchor(ANCHOR_MIDDLE)
-        review_panel:SetVAnchor(ANCHOR_MIDDLE)
+        local review_panel = controls:AddChild(ReviewPanel(client_store))
+        review_panel:SetHAnchor(GLOBAL.ANCHOR_MIDDLE)
+        review_panel:SetVAnchor(GLOBAL.ANCHOR_MIDDLE)
         review_panel:SetPosition(0, 0, 0)
 
         table.insert(client_store.on_state_callbacks, function(state, boss_name)
@@ -88,7 +88,8 @@ if not (GLOBAL.TheNet and GLOBAL.TheNet:IsDedicated()) then
 
         local key_code = GLOBAL[config.toggle_key] or GLOBAL.KEY_F8
         GLOBAL.TheInput:AddKeyUpHandler(key_code, function()
-            if hud:IsChatInputScreenOpen() or hud:IsConsoleScreenOpen() then
+            local screen = GLOBAL.TheFrontEnd and GLOBAL.TheFrontEnd:GetActiveScreen()
+            if not screen or screen.name ~= "HUD" then
                 return
             end
             review_panel:Toggle()

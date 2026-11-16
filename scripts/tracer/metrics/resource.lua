@@ -30,7 +30,7 @@ function ResourceCollector.AttachPlayer(player, collector)
         end
         local pid, pname, pprefab = Attribution.GetPlayerInfo(inst)
         local src = Attribution.GetSourceName(data.armor, "护甲耐久")
-        collector:Record("armor_loss", boss_id, pid, pname, data.damage, src, GLOBAL.GetTime(), pprefab)
+        collector:Record("armor_loss", boss_id, pid, pname, data.damage, src, GetTime(), pprefab)
     end)
 
     -- Food / edible consumption
@@ -41,7 +41,7 @@ function ResourceCollector.AttachPlayer(player, collector)
         end
         local pid, pname, pprefab = Attribution.GetPlayerInfo(inst)
         local src = Attribution.GetSourceName(data and data.food, "食物")
-        collector:Record("consumables_used", boss_id, pid, pname, 1, src, GLOBAL.GetTime(), pprefab)
+        collector:Record("consumables_used", boss_id, pid, pname, 1, src, GetTime(), pprefab)
     end)
 
     -- Healing item usage (e.g. salve, honey poultice)
@@ -54,7 +54,7 @@ function ResourceCollector.AttachPlayer(player, collector)
         if item and item.components and item.components.healer then
             local pid, pname, pprefab = Attribution.GetPlayerInfo(inst)
             local src = Attribution.GetSourceName(item, "治疗道具")
-            collector:Record("consumables_used", boss_id, pid, pname, 1, src, GLOBAL.GetTime(), pprefab)
+            collector:Record("consumables_used", boss_id, pid, pname, 1, src, GetTime(), pprefab)
         end
     end)
 end

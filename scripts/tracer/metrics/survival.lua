@@ -34,7 +34,7 @@ function SurvivalCollector.AttachPlayer(player, collector)
         end
         local pid, pname, pprefab = Attribution.GetPlayerInfo(inst)
         local src = Attribution.GetSourceName(data.attacker, "Boss攻击")
-        collector:Record("damage_taken", boss_id, pid, pname, data.damage, src, GLOBAL.GetTime(), pprefab)
+        collector:Record("damage_taken", boss_id, pid, pname, data.damage, src, GetTime(), pprefab)
     end)
 
     player:ListenForEvent("death", function(inst, data)
@@ -44,7 +44,7 @@ function SurvivalCollector.AttachPlayer(player, collector)
         end
         local pid, pname, pprefab = Attribution.GetPlayerInfo(inst)
         local src = Attribution.GetSourceName(data and data.cause, "阵亡")
-        collector:Record("deaths", boss_id, pid, pname, 1, src, GLOBAL.GetTime(), pprefab)
+        collector:Record("deaths", boss_id, pid, pname, 1, src, GetTime(), pprefab)
     end)
 end
 

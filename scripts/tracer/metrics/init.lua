@@ -99,13 +99,13 @@ function MetricsInit.AttachServerHooks(env, collector, config)
 
             inst:ListenForEvent("death", function()
                 if collector:GetSession(inst.GUID) then
-                    collector:EndBossSession(inst.GUID, GLOBAL.GetTime(), "victory")
+                    collector:EndBossSession(inst.GUID, GetTime(), "victory")
                 end
             end)
 
             inst:ListenForEvent("onremove", function()
                 if collector:GetSession(inst.GUID) then
-                    collector:EndBossSession(inst.GUID, GLOBAL.GetTime(), "despawn")
+                    collector:EndBossSession(inst.GUID, GetTime(), "despawn")
                 end
             end)
         end
@@ -123,9 +123,9 @@ function MetricsInit.AttachServerHooks(env, collector, config)
 
     -- Periodic timeout pruning on server world
     env.AddSimPostInit(function()
-        if GLOBAL.TheWorld then
-            GLOBAL.TheWorld:DoPeriodicTask(5, function()
-                collector:PruneTimeouts(GLOBAL.GetTime(), timeout)
+        if TheWorld then
+            TheWorld:DoPeriodicTask(5, function()
+                collector:PruneTimeouts(GetTime(), timeout)
             end)
         end
     end)

@@ -35,7 +35,7 @@ function SupportCollector.AttachPlayer(player, collector)
         local healer = Attribution.ResolvePlayer(data.afflicter) or inst
         local pid, pname, pprefab = Attribution.GetPlayerInfo(healer)
         local src = Attribution.GetSourceName(data.cause, "治疗恢复")
-        collector:Record("healing_done", boss_id, pid, pname, data.amount, src, GLOBAL.GetTime(), pprefab)
+        collector:Record("healing_done", boss_id, pid, pname, data.amount, src, GetTime(), pprefab)
     end)
 
     -- Damage absorbed by armor
@@ -49,7 +49,7 @@ function SupportCollector.AttachPlayer(player, collector)
         end
         local pid, pname, pprefab = Attribution.GetPlayerInfo(inst)
         local src = Attribution.GetSourceName(data.armor, "护甲")
-        collector:Record("mitigation", boss_id, pid, pname, data.absorbed, src, GLOBAL.GetTime(), pprefab)
+        collector:Record("mitigation", boss_id, pid, pname, data.absorbed, src, GetTime(), pprefab)
     end)
 end
 

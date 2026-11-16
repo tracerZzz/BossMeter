@@ -62,7 +62,7 @@ function Sync.Setup(env, collector, store)
     end)
 
     -- Server-side broadcast hooks
-    if GLOBAL.TheNet and GLOBAL.TheNet:GetIsServer() then
+    if TheNet and TheNet:GetIsServer() then
         collector:OnSessionStart(function(session)
             env.SendModRPCToClient(
                 env.GetClientModRPC(RPC_NAMESPACE, "BossState"),
