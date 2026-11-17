@@ -1,6 +1,6 @@
-name = "Tracer"
+name = "BossMeter"
 description = "Boss战数据统计与可视化回顾面板：支持伤害输出、生存承伤、辅助治疗、资源消耗四大维度及外部模组自定义指标扩展。"
-author = "Tracer Team"
+author = "BossMeter Team"
 version = "0.1.0"
 
 forumthread = ""
@@ -14,7 +14,7 @@ client_only_mod = false
 -- icon_atlas = "modicon.xml"
 -- icon = "modicon.tex"
 
-server_filter_tags = { "tracer", "boss", "dps", "stats" }
+server_filter_tags = { "bossmeter", "boss", "dps", "stats" }
 
 configuration_options = {
     {

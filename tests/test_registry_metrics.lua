@@ -1,6 +1,6 @@
 -- tests/test_registry_metrics.lua
 
-local Registry = require("tracer/core/registry")
+local Registry = require("bossmeter/core/registry")
 
 return function(T)
     local reg = Registry.New()

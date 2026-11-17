@@ -1,6 +1,6 @@
 -- tests/test_serializer.lua
 
-local Serializer = require("tracer/core/serializer")
+local Serializer = require("bossmeter/core/serializer")
 
 return function(T)
     local payload = {

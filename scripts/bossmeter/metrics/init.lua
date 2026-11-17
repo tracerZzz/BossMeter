@@ -1,10 +1,11 @@
--- scripts/tracer/metrics/init.lua
+-- scripts/bossmeter/metrics/init.lua
 -- Registers all 4 built-in metric categories and wires DST server event hooks.
 
-local DamageCollector = require("tracer/metrics/damage")
-local SurvivalCollector = require("tracer/metrics/survival")
-local SupportCollector = require("tracer/metrics/support")
-local ResourceCollector = require("tracer/metrics/resource")
+local Attribution = require("bossmeter/metrics/attribution")
+local DamageCollector = require("bossmeter/metrics/damage")
+local SurvivalCollector = require("bossmeter/metrics/survival")
+local SupportCollector = require("bossmeter/metrics/support")
+local ResourceCollector = require("bossmeter/metrics/resource")
 
 local MetricsInit = {}
 
@@ -125,7 +126,20 @@ function MetricsInit.AttachServerHooks(env, collector, config)
     env.AddSimPostInit(function()
         if TheWorld then
             TheWorld:DoPeriodicTask(5, function()
-                collector:PruneTimeouts(GetTime(), timeout)
+                local now = GetTime()
+                -- Keep session alive while Boss still has a player combat target (e.g. kiting)
+                for boss_id, session in pairs(collector:GetActiveSessions()) do
+                    local ent = session.entity
+                    if ent and ent:IsValid() and ent.components and ent.components.combat then
+                        local target = ent.components.combat.target
+                        local player = target and Attribution.ResolvePlayer(target)
+                        if player then
+                            local pid = select(1, Attribution.GetPlayerInfo(player))
+                            collector:TouchSession(boss_id, now, pid)
+                        end
+                    end
+                end
+                collector:PruneTimeouts(now, timeout)
             end)
         end
     end)

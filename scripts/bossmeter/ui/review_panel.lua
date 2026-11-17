@@ -1,4 +1,4 @@
--- scripts/tracer/ui/review_panel.lua
+-- scripts/bossmeter/ui/review_panel.lua
 -- Post-combat Boss fight review panel with 4-category tabs, BarChart, LineChart, and source breakdown.
 
 local Widget = require "widgets/widget"
@@ -6,8 +6,8 @@ local Image = require "widgets/image"
 local Text = require "widgets/text"
 local TextButton = require "widgets/textbutton"
 
-local BarChart = require("tracer/ui/charts/bar_chart")
-local LineChart = require("tracer/ui/charts/line_chart")
+local BarChart = require("bossmeter/ui/charts/bar_chart")
+local LineChart = require("bossmeter/ui/charts/line_chart")
 
 local CATEGORIES = {
     { id = "damage",   label = "伤害输出" },
@@ -24,7 +24,7 @@ local OUTCOME_LABELS = {
 }
 
 local ReviewPanel = Class(Widget, function(self, store)
-    Widget._ctor(self, "TracerReviewPanel")
+    Widget._ctor(self, "BossMeterReviewPanel")
     self.store = store
     self.report_idx = 1
     self.active_category = "damage"
@@ -44,7 +44,7 @@ local ReviewPanel = Class(Widget, function(self, store)
     self.header_bg:SetPosition(0, self.panel_h / 2 - 26, 0)
     self.header_bg:SetTint(0.12, 0.14, 0.19, 0.98)
 
-    self.title_txt = self:AddChild(Text(HEADERFONT, 26, "Tracer 战后数据回顾"))
+    self.title_txt = self:AddChild(Text(HEADERFONT, 26, "BossMeter 战后数据回顾"))
     self.title_txt:SetHAlign(ANCHOR_LEFT)
     self.title_txt:SetRegionSize(440, 40)
     self.title_txt:SetPosition(-self.panel_w / 2 + 236, self.panel_h / 2 - 26, 0)
@@ -146,7 +146,7 @@ function ReviewPanel:Refresh()
     local reports = self.store.reports
     local count = #reports
     if count == 0 then
-        self.title_txt:SetString("Tracer 战后数据回顾")
+        self.title_txt:SetString("BossMeter 战后数据回顾")
         self.page_txt:SetString("0 / 0")
         self.bar_chart:Hide()
         self.line_chart:Hide()

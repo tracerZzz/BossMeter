@@ -1,9 +1,9 @@
 -- modmain.lua
--- Entry point for the Tracer DST mod.
+-- Entry point for the BossMeter DST mod.
 
-local Collector = require("tracer/core/collector")
-local MetricsInit = require("tracer/metrics/init")
-local Sync = require("tracer/net/sync")
+local Collector = require("bossmeter/core/collector")
+local MetricsInit = require("bossmeter/metrics/init")
+local Sync = require("bossmeter/net/sync")
 
 local config = {
     hud_indicator = GetModConfigData("hud_indicator") ~= false,
@@ -18,7 +18,7 @@ local collector = Collector.New()
 MetricsInit.RegisterBuiltins(collector)
 
 -- Expose public API for external mods
-GLOBAL.Tracer = {
+GLOBAL.BossMeter = {
     VERSION = "0.1.0",
     RegisterMetric = function(id, def)
         if type(def) == "table" and def.is_custom == nil then
@@ -51,8 +51,8 @@ end
 
 -- Attach client-side HUD indicator & post-combat review panel
 if not (GLOBAL.TheNet and GLOBAL.TheNet:IsDedicated()) then
-    local HudIndicator = require("tracer/ui/hud_indicator")
-    local ReviewPanel = require("tracer/ui/review_panel")
+    local HudIndicator = require("bossmeter/ui/hud_indicator")
+    local ReviewPanel = require("bossmeter/ui/review_panel")
 
     AddClassPostConstruct("widgets/controls", function(controls)
         if not controls then

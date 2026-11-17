@@ -1,4 +1,4 @@
--- scripts/tracer/core/session.lua
+-- scripts/bossmeter/core/session.lua
 -- Boss fight session lifecycle management and per-second bucket aggregation.
 
 local SessionManager = {}
@@ -20,12 +20,15 @@ end
 -- @param boss_name string Display name
 -- @param start_time number Current world/game time in seconds
 -- @param boss_max_hp number|nil Optional max HP
-function SessionManager:StartSession(boss_id, boss_prefab, boss_name, start_time, boss_max_hp)
+function SessionManager:StartSession(boss_id, boss_prefab, boss_name, start_time, boss_max_hp, boss_entity)
     if boss_id == nil then
         return nil, "boss_id is required"
     end
     local existing = self.active_sessions[boss_id]
     if existing then
+        if boss_entity and not existing.entity then
+            existing.entity = boss_entity
+        end
         return existing, nil
     end
 
@@ -36,8 +39,10 @@ function SessionManager:StartSession(boss_id, boss_prefab, boss_name, start_time
         boss_prefab = boss_prefab or "unknown",
         boss_name = boss_name or boss_prefab or "Unknown Boss",
         boss_max_hp = boss_max_hp or 0,
+        entity = boss_entity,
         start_time = now,
         last_activity_time = now,
+        combat_players = {}, -- [player_id] = last_combat_time
         players = {},       -- [player_id] = { id = player_id, name = player_name, prefab = ... }
         metrics = {},       -- [metric_id] = { totals = { [player_id] = num }, sources = { [player_id] = { [src] = num } }, buckets = { [sec_idx] = { [player_id] = num } } }
     }
@@ -54,10 +59,21 @@ function SessionManager:GetActiveSessions()
     return self.active_sessions
 end
 
-function SessionManager:TouchSession(boss_id, current_time)
+function SessionManager:TouchSession(boss_id, current_time, player_id)
     local session = self.active_sessions[boss_id]
-    if session and current_time and current_time > session.last_activity_time then
+    if not session then
+        return
+    end
+    local now = current_time or session.last_activity_time
+    if current_time and current_time > session.last_activity_time then
         session.last_activity_time = current_time
+    end
+    if player_id then
+        local pid = tostring(player_id)
+        local prev = session.combat_players[pid] or -1
+        if now > prev then
+            session.combat_players[pid] = now
+        end
     end
 end
 
@@ -70,7 +86,8 @@ end
 -- @param source_name string|nil Optional breakdown source (e.g. weapon/food name)
 -- @param timestamp number|nil Event timestamp in seconds
 -- @param player_prefab string|nil Optional player prefab
-function SessionManager:RecordValue(boss_id, metric_id, player_id, player_name, value, source_name, timestamp, player_prefab)
+-- @param options table|nil Optional { touch_activity = bool (default true), combat_interaction = bool }
+function SessionManager:RecordValue(boss_id, metric_id, player_id, player_name, value, source_name, timestamp, player_prefab, options)
     local session = self.active_sessions[boss_id]
     if not session then
         return false, "no active session for boss_id: " .. tostring(boss_id)
@@ -96,8 +113,15 @@ function SessionManager:RecordValue(boss_id, metric_id, player_id, player_name, 
     end
 
     local now = timestamp or session.last_activity_time or session.start_time
-    if now > session.last_activity_time then
+    local should_touch = not options or options.touch_activity ~= false
+    if should_touch and now > session.last_activity_time then
         session.last_activity_time = now
+    end
+    if options and options.combat_interaction then
+        local prev_combat = session.combat_players[pid] or -1
+        if now > prev_combat then
+            session.combat_players[pid] = now
+        end
     end
 
     local mdata = session.metrics[metric_id]
@@ -170,6 +194,7 @@ function SessionManager:EndSession(boss_id, end_time, outcome)
 
     local summary = {
         session_id = session.session_id,
+        boss_id = session.boss_id,
         boss_prefab = session.boss_prefab,
         boss_name = session.boss_name,
         boss_max_hp = session.boss_max_hp,
@@ -252,7 +277,9 @@ function SessionManager:PruneTimeouts(current_time, timeout_seconds)
 
     local ended = {}
     for _, boss_id in ipairs(timed_out_ids) do
-        local summary = self:EndSession(boss_id, current_time, "timeout")
+        local session = self.active_sessions[boss_id]
+        local finish_time = (session and session.last_activity_time) or current_time
+        local summary = self:EndSession(boss_id, finish_time, "timeout")
         if summary then
             table.insert(ended, summary)
         end

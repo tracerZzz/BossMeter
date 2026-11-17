@@ -1,5 +1,5 @@
 -- tests/run_tests.lua
--- Minimal zero-dependency Lua 5.1 unit test runner for Tracer core.
+-- Minimal zero-dependency Lua 5.1 unit test runner for BossMeter core.
 
 package.path = "./scripts/?.lua;./scripts/?/init.lua;./tests/?.lua;" .. package.path
 

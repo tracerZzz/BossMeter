@@ -1,4 +1,4 @@
--- scripts/tracer/core/serializer.lua
+-- scripts/bossmeter/core/serializer.lua
 -- Safe, self-contained JSON-compatible serializer/deserializer and RPC chunker.
 -- Avoids loadstring() for security and works identically in DST and standard Lua 5.1.
 

@@ -1,4 +1,4 @@
--- scripts/tracer/ui/charts/line_chart.lua
+-- scripts/bossmeter/ui/charts/line_chart.lua
 -- Built-in multi-series time-series line chart Widget using standard DST assets.
 
 local Widget = require "widgets/widget"
@@ -15,7 +15,7 @@ local DEFAULT_PALETTE = {
 }
 
 local LineChart = Class(Widget, function(self, width, height)
-    Widget._ctor(self, "TracerLineChart")
+    Widget._ctor(self, "BossMeterLineChart")
     self.width = width or 480
     self.height = height or 170
     self.canvas = self:AddChild(Widget("Canvas"))

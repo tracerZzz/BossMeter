@@ -1,4 +1,4 @@
--- scripts/tracer/core/registry.lua
+-- scripts/bossmeter/core/registry.lua
 -- Metric definition registry for built-in and external mod metrics.
 
 local Registry = {}

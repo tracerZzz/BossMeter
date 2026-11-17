@@ -1,4 +1,4 @@
--- scripts/tracer/ui/charts/bar_chart.lua
+-- scripts/bossmeter/ui/charts/bar_chart.lua
 -- Built-in horizontal bar chart Widget using standard DST assets.
 
 local Widget = require "widgets/widget"
@@ -15,7 +15,7 @@ local DEFAULT_PALETTE = {
 }
 
 local BarChart = Class(Widget, function(self, width, height)
-    Widget._ctor(self, "TracerBarChart")
+    Widget._ctor(self, "BossMeterBarChart")
     self.width = width or 480
     self.height = height or 200
     self.rows_root = self:AddChild(Widget("RowsRoot"))

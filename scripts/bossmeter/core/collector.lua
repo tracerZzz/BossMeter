@@ -1,8 +1,8 @@
--- scripts/tracer/core/collector.lua
--- Public Tracer core facade combining Registry and SessionManager.
+-- scripts/bossmeter/core/collector.lua
+-- Public BossMeter core facade combining Registry and SessionManager.
 
-local Registry = require("tracer/core/registry")
-local SessionManager = require("tracer/core/session")
+local Registry = require("bossmeter/core/registry")
+local SessionManager = require("bossmeter/core/session")
 
 local Collector = {}
 Collector.__index = Collector
@@ -32,9 +32,9 @@ function Collector:ListMetrics(category)
 end
 
 --- Start a Boss fight session (idempotent if already active).
-function Collector:StartBossSession(boss_id, boss_prefab, boss_name, start_time, boss_max_hp)
+function Collector:StartBossSession(boss_id, boss_prefab, boss_name, start_time, boss_max_hp, boss_entity)
     local existed = self.sessions:GetSession(boss_id) ~= nil
-    local session, err = self.sessions:StartSession(boss_id, boss_prefab, boss_name, start_time, boss_max_hp)
+    local session, err = self.sessions:StartSession(boss_id, boss_prefab, boss_name, start_time, boss_max_hp, boss_entity)
     if session and not existed then
         for _, cb in ipairs(self.on_session_start_callbacks) do
             cb(session)
@@ -43,9 +43,14 @@ function Collector:StartBossSession(boss_id, boss_prefab, boss_name, start_time,
     return session, err
 end
 
+--- Refresh activity timestamp (and optionally record combat participation) for an active session.
+function Collector:TouchSession(boss_id, current_time, player_id)
+    return self.sessions:TouchSession(boss_id, current_time, player_id)
+end
+
 --- Record a metric value for a player in an active Boss fight session.
-function Collector:Record(metric_id, boss_id, player_id, player_name, value, source_name, timestamp, player_prefab)
-    return self.sessions:RecordValue(boss_id, metric_id, player_id, player_name, value, source_name, timestamp, player_prefab)
+function Collector:Record(metric_id, boss_id, player_id, player_name, value, source_name, timestamp, player_prefab, options)
+    return self.sessions:RecordValue(boss_id, metric_id, player_id, player_name, value, source_name, timestamp, player_prefab, options)
 end
 
 --- End a Boss fight session and notify listeners.
